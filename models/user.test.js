@@ -7,6 +7,7 @@ const {
 } = require("../expressError");
 const db = require("../db.js");
 const User = require("./user.js");
+const Job = require("./job.js");
 const {
   commonBeforeAll,
   commonBeforeEach,
@@ -132,6 +133,20 @@ describe("findAll", function () {
 /************************************** get */
 
 describe("get", function () {
+  const newUser = {
+    username: "new",
+    firstName: "Test",
+    lastName: "Tester",
+    email: "test@test.com",
+    isAdmin: false,
+  };
+  const newJob = {
+    title: "anotha2",
+    salary: 53,
+    equity: 0.8,
+    company_handle: "c1",
+  };
+
   test("works", async function () {
     let user = await User.get("u1");
     expect(user).toEqual({
@@ -139,7 +154,27 @@ describe("get", function () {
       firstName: "U1F",
       lastName: "U1L",
       email: "u1@email.com",
+      applications: [],
       isAdmin: false,
+    });
+  });
+
+  test("should have applications", async () => {
+    let user = await User.register({
+      ...newUser,
+      password: "password",
+    });
+    const job = await Job.create(newJob);
+    await User.apply(user.username, job.id);
+
+    const resp = await User.get(user.username);
+    expect(resp).toEqual({
+      username: "new",
+      firstName: "Test",
+      lastName: "Tester",
+      email: "test@test.com",
+      isAdmin: false,
+      applications: [job.id],
     });
   });
 
@@ -214,8 +249,7 @@ describe("update", function () {
 describe("remove", function () {
   test("works", async function () {
     await User.remove("u1");
-    const res = await db.query(
-        "SELECT * FROM users WHERE username='u1'");
+    const res = await db.query("SELECT * FROM users WHERE username='u1'");
     expect(res.rows.length).toEqual(0);
   });
 

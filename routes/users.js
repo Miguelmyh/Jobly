@@ -42,6 +42,24 @@ router.post("/", ensureLoggedIn, async function (req, res, next) {
   }
 });
 
+/** should post a job application
+ *
+ * if there is already a job application with same user and job id
+ * throw badRequest error
+ *
+ */
+
+router.post("/:username/jobs/:id", async (req, res, next) => {
+  try {
+    const { username, id } = req.params;
+    await User.apply(username, id);
+
+    return res.json({ applied: id });
+  } catch (err) {
+    next(err);
+  }
+});
+
 /** GET / => { users: [ {username, firstName, lastName, email }, ... ] }
  *
  * Returns list of all users.

@@ -41,6 +41,12 @@ class Company {
 
   /** Find all companies.
    *
+   *
+   * args are passed as an array(if any)
+   * minEmployees
+   * maxEmployees
+   * nameLike //case insensitive
+   *
    * Returns [{ handle, name, description, numEmployees, logoUrl }, ...]
    * */
 
@@ -78,16 +84,6 @@ class Company {
     const companiesRes = await db.query(companiesQuery, values);
     return companiesRes.rows;
   }
-
-  /** Find all companies based on filter queries.
-   *
-   * args are passed as an array
-   * minEmployees
-   * maxEmployees
-   * nameLike //case insensitive
-   *
-   * Returns [{ handle, name, description, numEmployees, logoUrl }, ...]
-   * */
 
   /** Given a company handle, return data about company.
    *

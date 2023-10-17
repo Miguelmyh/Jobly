@@ -145,6 +145,14 @@ describe("GET /companies/:handle", function () {
         name: "C1",
         description: "Desc1",
         numEmployees: 1,
+        jobs: [
+          {
+            equity: "0.8",
+            id: expect.any(Number),
+            salary: 50,
+            title: "anotha1",
+          },
+        ],
         logoUrl: "http://c1.img",
       },
     });
@@ -158,6 +166,7 @@ describe("GET /companies/:handle", function () {
         name: "C2",
         description: "Desc2",
         numEmployees: 2,
+        jobs: [],
         logoUrl: "http://c2.img",
       },
     });

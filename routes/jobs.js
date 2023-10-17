@@ -18,7 +18,6 @@ router.post("/", ensureAdmin, async function (req, res, next) {
       const errs = validator.errors.map((e) => e.stack);
       throw new BadRequestError(errs);
     }
-
     const job = await Job.create(req.body);
     return res.status(201).json({ job });
   } catch (err) {
@@ -65,6 +64,9 @@ router.get("/:id", async (req, res, next) => {
 
 router.patch("/:id", ensureAdmin, async function (req, res, next) {
   try {
+    if (req.body.id) {
+      throw new BadRequestError("id can't be edited");
+    }
     const validator = jsonschema.validate(req.body, jobsUpdateSchema);
     if (!validator.valid) {
       const errs = validator.errors.map((e) => e.stack);
@@ -78,7 +80,7 @@ router.patch("/:id", ensureAdmin, async function (req, res, next) {
   }
 });
 
-router.delete("/:handle", ensureAdmin, async function (req, res, next) {
+router.delete("/:id", ensureAdmin, async function (req, res, next) {
   try {
     await Job.remove(req.params.id);
     return res.json({ deleted: req.params.id });
@@ -86,3 +88,5 @@ router.delete("/:handle", ensureAdmin, async function (req, res, next) {
     return next(err);
   }
 });
+
+module.exports = router;
